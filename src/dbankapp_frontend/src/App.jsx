@@ -9,24 +9,26 @@ function App() {
     withdrawalAmount: '',
   });
 
-  const currentBalance = () => {
-    return dbankapp_backend.compound()
-      .then(() => {
-        dbankapp_backend.checkBalance()
-      .then((res) => {
-        setCurrentValue(res);
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        setIsLoading(false)
-        console.log(err)
-      })
-    })
-  };
-
   useEffect(() => {
-    currentBalance();
+    getCurrentBalance().catch(console.error);
+    topUpAmount().catch(console.error);
+    withdrawAmount().catch(console.error);
   }, []);
+
+  async function getCurrentBalance() {
+    await dbankapp_backend.compound();
+    const response = await dbankapp_backend.checkBalance();
+    setCurrentValue(response);
+    setIsLoading(false);
+  }
+
+  async function topUpAmount() {
+    await dbankapp_backend.topUp(Number(formData.topUpAmount));
+  }
+
+  async function withdrawAmount() {
+    await dbankapp_backend.withdraw(Number(formData.withdrawalAmount));
+  }
 
   function handleChange(e) {
     const {value, name} = e.target;
@@ -40,9 +42,16 @@ function App() {
 
   function handleClick(e) {
     e.preventDefault();
-    dbankapp_backend.topUp(Number(formData.topUpAmount));
-    dbankapp_backend.withdraw(Number(formData.withdrawalAmount));
-    currentBalance(); 
+    if (formData.topUpAmount) {
+      topUpAmount();
+      getCurrentBalance(); 
+    }
+    if (formData.withdrawalAmount) {
+      console.log('withdraa')
+      withdrawAmount();
+      getCurrentBalance(); 
+    }
+    
     setFormData({
       topUpAmount: '',
       withdrawalAmount: '',
@@ -52,6 +61,7 @@ function App() {
   return (
     <div className="container">
       {isLoading && <h5>Loading ...</h5>}
+      {currentValue < 0 && <p>Amount is too large</p>}
       {currentValue &&
       <h1>Current Balance: <span id="value"></span>{currentValue.toFixed(2)}</h1>}
       <div className="divider"></div>
