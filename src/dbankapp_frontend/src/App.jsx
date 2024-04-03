@@ -47,7 +47,6 @@ function App() {
       getCurrentBalance(); 
     }
     if (formData.withdrawalAmount) {
-      console.log('withdraa')
       withdrawAmount();
       getCurrentBalance(); 
     }
