@@ -69,7 +69,7 @@ function App() {
   return (
     <div className="container">
       {isLoading && <h5>Loading ...</h5>}
-      {currentValue && <h1>Current Balance: <span id="value"></span>{currentValue.toFixed(2)}</h1>}
+      {currentValue && <h1>Current Balance: {currentValue.toFixed(2)}</h1>}
       <div className="divider"></div>
       <form typeof="submit">
         <h2>Amount to Top Up</h2>
