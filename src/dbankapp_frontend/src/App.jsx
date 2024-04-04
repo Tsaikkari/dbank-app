@@ -11,7 +11,7 @@ function App() {
     withdrawalAmount: "",
   });
 
-  const styles = {
+  const buttonStyle = {
     disabledButton: {
       border: "2px rgba(255, 255, 255, 0.1) solid",
       backgroundColor: "rgba(255, 255, 255, 0.1)",
@@ -45,7 +45,7 @@ function App() {
   }, []);
 
   async function getCurrentBalance() {
-    // functions run in serial
+    // canester calls run in serial
     await dbankapp_backend.compound();
     const response = await dbankapp_backend.checkBalance();
     setCurrentValue(response);
@@ -103,7 +103,7 @@ function App() {
   return (
     <div className="container">
       {isLoading && <h5>Loading ...</h5>}
-      {currentValue && <h1>Current Balance: {currentValue.toFixed(2)}</h1>}
+      {currentValue && <h1>Current Balance: €{currentValue.toFixed(2)}</h1>}
       <div className="divider"></div>
       <form typeof="submit">
         <h2>Amount to Top Up</h2>
@@ -127,9 +127,8 @@ function App() {
           onChange={handleChange}
         />
         <input
-          className="submit-btn"
           style={
-            isButtonDisabled ? styles.disabledButton : styles.enabledButton
+            isButtonDisabled ? buttonStyle.disabledButton : buttonStyle.enabledButton
           }
           onClick={handleClick}
           onMouseEnter={onMouseEnter}
