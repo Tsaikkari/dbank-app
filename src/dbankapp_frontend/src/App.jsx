@@ -44,7 +44,25 @@ function App() {
     withdrawAmount().catch(console.error);
   }, []);
 
+  useEffect(() => {
+    update().catch(console.error);
+  }, []);
+
   async function getCurrentBalance() {
+    const response = await dbankapp_backend.checkBalance();
+    setCurrentValue(response);
+    setIsLoading(false);
+  }
+
+  async function topUpAmount() {
+    await dbankapp_backend.topUp(Number(formData.topUpAmount));
+  }
+
+  async function withdrawAmount() {
+    await dbankapp_backend.withdraw(Number(formData.withdrawalAmount));
+  }
+
+  async function update() {
     // canester calls run in serial
     await dbankapp_backend.compound();
     const response = await dbankapp_backend.checkBalance();
@@ -55,14 +73,6 @@ function App() {
       topUpAmount: "",
       withdrawalAmount: "",
     });
-  }
-
-  async function topUpAmount() {
-    await dbankapp_backend.topUp(Number(formData.topUpAmount));
-  }
-
-  async function withdrawAmount() {
-    await dbankapp_backend.withdraw(Number(formData.withdrawalAmount));
   }
 
   function handleChange(e) {
@@ -79,17 +89,15 @@ function App() {
     e.preventDefault();
     if (formData.topUpAmount) {
       topUpAmount();
-      getCurrentBalance();
-      setIsButtonDisabled(true);
     }
     if (formData.withdrawalAmount) {
       if (currentValue - formData.withdrawalAmount < 0) {
         window.alert("Withdrawal amount is too large");
       }
       withdrawAmount();
-      getCurrentBalance();
-      setIsButtonDisabled(true);
     }
+    update();
+    setIsButtonDisabled(true);
   }
 
   function onMouseEnter() {
