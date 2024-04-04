@@ -11,7 +11,13 @@ function App() {
 
   useEffect(() => {
     getCurrentBalance().catch(console.error);
+  }, []);
+
+  useEffect(() => {
     topUpAmount().catch(console.error);
+  }, []);
+
+  useEffect(() => {
     withdrawAmount().catch(console.error);
   }, []);
 
@@ -47,6 +53,9 @@ function App() {
       getCurrentBalance(); 
     }
     if (formData.withdrawalAmount) {
+      if (currentValue - formData.withdrawalAmount < 0) {
+        window.alert("Withdrawal amount is too large");
+      }
       withdrawAmount();
       getCurrentBalance(); 
     }
@@ -60,9 +69,7 @@ function App() {
   return (
     <div className="container">
       {isLoading && <h5>Loading ...</h5>}
-      {currentValue < 0 && <p>Amount is too large</p>}
-      {currentValue &&
-      <h1>Current Balance: <span id="value"></span>{currentValue.toFixed(2)}</h1>}
+      {currentValue && <h1>Current Balance: <span id="value"></span>{currentValue.toFixed(2)}</h1>}
       <div className="divider"></div>
       <form typeof="submit">
         <h2>Amount to Top Up</h2>
